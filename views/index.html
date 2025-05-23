@@ -1,20 +1,229 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Roblox Player Stats</title>
+  <title>Ball Rivals Tracker</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    body { font-family: sans-serif; padding: 2rem; background: #f8f8f8; }
-    input, button { padding: 0.5rem; margin-right: 1rem; }
-    #stats { margin-top: 2rem; }
+    :root {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --text-primary: #c9d1d9;
+      --text-secondary: #8b949e;
+      --accent: #58a6ff;
+      --border: #30363d;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .search-container {
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      font-size: 1.1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      transition: all 0.2s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.2);
+    }
+
+    .search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-top: 0.5rem;
+      max-height: 300px;
+      overflow-y: auto;
+      display: none;
+      z-index: 1000;
+    }
+
+    .search-results.active {
+      display: block;
+    }
+
+    .player-result {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .player-result:hover {
+      background: var(--bg-primary);
+    }
+
+    .player-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+
+    .player-info {
+      flex: 1;
+    }
+
+    .player-name {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .player-stats {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .stats-container {
+      margin-top: 2rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      display: none;
+    }
+
+    .stats-container.active {
+      display: block;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .stat-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
   </style>
 </head>
 <body>
-  <h1>Search Roblox Player Stats</h1>
-  <input id="username" placeholder="Enter Roblox Username" />
-  <button onclick="fetchStats()">Search</button>
+  <div class="container">
+    <div class="header">
+      <h1>Ball Rivals Tracker</h1>
+    </div>
 
-  <div id="stats"></div>
+    <div class="search-container">
+      <input type="text" id="username" class="search-input" placeholder="Search for a player..." autocomplete="off">
+      <div id="searchResults" class="search-results"></div>
+    </div>
 
-  <script src="script.js"></script>
+    <div id="stats" class="stats-container"></div>
+  </div>
+
+  <script>
+    let searchTimeout;
+    const searchInput = document.getElementById('username');
+    const searchResults = document.getElementById('searchResults');
+    const statsContainer = document.getElementById('stats');
+
+    searchInput.addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      const query = e.target.value.trim();
+      
+      if (query.length < 2) {
+        searchResults.classList.remove('active');
+        return;
+      }
+
+      searchTimeout = setTimeout(async () => {
+        try {
+          const res = await fetch(`/search?query=${encodeURIComponent(query)}`);
+          if (!res.ok) throw new Error('Search failed');
+          const players = await res.json();
+          
+          if (players.length === 0) {
+            searchResults.innerHTML = '<div class="player-result">No players found</div>';
+          } else {
+            searchResults.innerHTML = players.map(player => `
+              <div class="player-result" onclick="viewProfile('${player.username}')">
+                <div class="player-avatar"></div>
+                <div class="player-info">
+                  <div class="player-name">${player.username}</div>
+                  <div class="player-stats">Level ${player.level || 'N/A'}</div>
+                </div>
+              </div>
+            `).join('');
+          }
+          searchResults.classList.add('active');
+        } catch (err) {
+          console.error('Search error:', err);
+        }
+      }, 300);
+    });
+
+    async function viewProfile(username) {
+      window.location.href = `/@${username}`;
+    }
+
+    // Close search results when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+        searchResults.classList.remove('active');
+      }
+    });
+  </script>
 </body>
 </html>
