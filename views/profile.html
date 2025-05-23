@@ -24,19 +24,25 @@
       background: var(--bg-primary);
       color: var(--text-primary);
       line-height: 1.5;
+      min-height: 100vh;
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 700px;
       margin: 0 auto;
-      padding: 2rem;
+      padding: 2.5rem 1.5rem 3rem 1.5rem;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      box-shadow: 0 4px 32px 0 rgba(20,20,20,0.18);
+      border: 1.5px solid var(--border);
+      margin-top: 3rem;
     }
 
     .header {
       display: flex;
       align-items: center;
       gap: 2rem;
-      margin-bottom: 3rem;
+      margin-bottom: 2.5rem;
     }
 
     .back-button {
@@ -46,6 +52,8 @@
       align-items: center;
       gap: 0.5rem;
       transition: color 0.2s;
+      font-size: 1.1rem;
+      font-weight: 500;
     }
 
     .back-button:hover {
@@ -54,29 +62,52 @@
 
     .profile-header {
       display: flex;
-      gap: 2rem;
+      gap: 2.2rem;
       margin-bottom: 3rem;
+      align-items: center;
     }
 
     .avatar {
-      width: 120px;
-      height: 120px;
+      width: 130px;
+      height: 130px;
       border-radius: 50%;
       background: var(--border);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 16px 0 rgba(20,20,20,0.15);
+      border: 3px solid var(--bg-secondary);
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
     }
 
     .profile-info {
       flex: 1;
+      min-width: 0;
     }
 
     .username {
-      font-size: 2rem;
+      font-size: 2.1rem;
       margin-bottom: 0.5rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      color: var(--text-primary);
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
 
     .level {
       color: var(--text-secondary);
       font-size: 1.1rem;
+      font-weight: 500;
     }
 
     .stats-grid {
@@ -87,10 +118,17 @@
     }
 
     .stat-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.5rem;
+      background: var(--bg-primary);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem 1.2rem 1.5rem 1.5rem;
+      box-shadow: 0 1px 8px 0 rgba(20,20,20,0.10);
+      transition: box-shadow 0.18s, border-color 0.18s;
+    }
+
+    .stat-card:hover {
+      box-shadow: 0 4px 16px 0 rgba(88,166,255,0.10);
+      border-color: var(--accent);
     }
 
     .stat-header {
@@ -102,23 +140,27 @@
 
     .stat-title {
       color: var(--text-secondary);
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      font-weight: 600;
     }
 
     .stat-value {
-      font-size: 2rem;
-      font-weight: 600;
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-top: 0.2rem;
     }
 
     .elo-badge {
       display: inline-block;
       padding: 0.25rem 0.75rem;
       border-radius: 12px;
-      font-size: 0.9rem;
-      font-weight: 500;
+      font-size: 0.95rem;
+      font-weight: 600;
       margin-left: 0.5rem;
+      letter-spacing: 0.5px;
     }
 
     .elo-bronze {
@@ -160,6 +202,7 @@
       font-size: 1.2rem;
       color: var(--text-secondary);
       margin-top: 0.5rem;
+      font-weight: 500;
     }
 
     .winrate.positive {
@@ -175,7 +218,8 @@
       align-items: center;
       gap: 0.5rem;
       color: var(--text-secondary);
-      font-size: 0.9rem;
+      font-size: 0.97rem;
+      font-weight: 500;
     }
 
     .trend-up {
@@ -187,15 +231,18 @@
     }
 
     .recent-matches {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 8px;
+      background: var(--bg-primary);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
       padding: 1.5rem;
+      box-shadow: 0 1px 8px 0 rgba(20,20,20,0.08);
     }
 
     .section-title {
       font-size: 1.2rem;
       margin-bottom: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
     }
 
     .match-list {
@@ -209,9 +256,10 @@
       justify-content: space-between;
       align-items: center;
       padding: 1rem;
-      background: var(--bg-primary);
-      border: 1px solid var(--border);
-      border-radius: 6px;
+      background: var(--bg-secondary);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 1px 6px 0 rgba(20,20,20,0.07);
     }
 
     .match-info {
@@ -221,7 +269,7 @@
     }
 
     .match-result {
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .win {
@@ -234,7 +282,7 @@
 
     .match-details {
       color: var(--text-secondary);
-      font-size: 0.9rem;
+      font-size: 0.97rem;
     }
   </style>
 </head>
@@ -248,7 +296,7 @@
     </div>
 
     <div class="profile-header">
-      <div class="avatar"></div>
+      <div class="avatar" id="robloxAvatar"></div>
       <div class="profile-info">
         <h1 class="username" id="username">Loading...</h1>
         <div class="level" id="level">Level: Loading...</div>
@@ -284,6 +332,24 @@
       return `${Math.round((wins / total) * 100)}%`;
     }
 
+    async function fetchRobloxAvatar(username) {
+      try {
+        // Get userId from username
+        const userRes = await fetch(`https://api.roblox.com/users/get-by-username?username=${encodeURIComponent(username)}`);
+        const userData = await userRes.json();
+        if (!userData.Id) return null;
+        // Get avatar image
+        const avatarRes = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userData.Id}&size=150x150&format=Png&isCircular=true`);
+        const avatarData = await avatarRes.json();
+        if (avatarData.data && avatarData.data[0] && avatarData.data[0].imageUrl) {
+          return avatarData.data[0].imageUrl;
+        }
+        return null;
+      } catch (e) {
+        return null;
+      }
+    }
+
     async function loadProfile() {
       const username = window.location.pathname.split('@')[1];
       if (!username) return;
@@ -300,6 +366,15 @@
         const stats = data.stats;
         const winrate = calculateWinrate(stats.Wins, stats.Losses);
         const isPositiveWinrate = stats.Wins > stats.Losses;
+
+        // Fetch and set ROBLOX avatar
+        const avatarUrl = await fetchRobloxAvatar(data.username);
+        const avatarDiv = document.getElementById('robloxAvatar');
+        if (avatarUrl) {
+          avatarDiv.innerHTML = `<img src="${avatarUrl}" alt="${data.username}'s ROBLOX Avatar">`;
+        } else {
+          avatarDiv.innerHTML = `<i class='fas fa-user fa-4x' style='color:var(--text-secondary);'></i>`;
+        }
 
         // Update stats grid
         const statsGrid = document.getElementById('statsGrid');
