@@ -44,12 +44,14 @@ app.get('/search', async (req, res) => {
             const stats = JSON.parse(row.stats);
             return {
               username: row.username,
-              level: stats.level || 'N/A'
+              wins: stats.Wins || 0,
+              elo: stats.ELO_1v1 || 1000 // Using 1v1 ELO as the main rating
             };
           } catch (e) {
             return {
               username: row.username,
-              level: 'N/A'
+              wins: 0,
+              elo: 1000
             };
           }
         });
@@ -83,23 +85,22 @@ app.get('/getstats', (req, res) => {
     if (err) return res.status(500).json({ error: 'DB error' });
     if (!stats) return res.status(404).json({ error: 'Player not found' });
 
-    // Add mock recent matches for now
-    stats.recentMatches = [
-      {
-        won: true,
-        map: 'Stadium',
-        duration: '5:30',
-        score: '3-1'
-      },
-      {
-        won: false,
-        map: 'Arena',
-        duration: '4:15',
-        score: '2-3'
+    // Format the stats to match the game's structure
+    const formattedStats = {
+      username: username,
+      stats: {
+        Wins: stats.Wins || 0,
+        Losses: stats.Losses || 0,
+        CurrentStreak: stats.CurrentStreak || 0,
+        HighestStreak: stats.HighestStreak || 0,
+        ELO_1v1: stats.ELO_1v1 || 1000,
+        ELO_2v2: stats.ELO_2v2 || 1000,
+        ELO_3v3: stats.ELO_3v3 || 1000,
+        ELO_4v4: stats.ELO_4v4 || 1000
       }
-    ];
+    };
 
-    res.json(stats);
+    res.json(formattedStats);
   });
 });
 
