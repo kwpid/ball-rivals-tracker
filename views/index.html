@@ -215,44 +215,24 @@
           if (players.length === 0) {
             searchResults.innerHTML = '<div class="player-result">No players found</div>';
           } else {
-            searchResults.innerHTML = players.map(player => {
-              // Calculate total wins across all modes
-              const totalWins = (player.Wins_Casual || 0) + (player.Wins_1v1 || 0) + 
-                              (player.Wins_2v2 || 0) + (player.Wins_3v3 || 0) + 
-                              (player.Wins_4v4 || 0);
-              
-              // Find highest ELO across all modes
-              const elos = [
-                player.ELO_1v1 || 1000,
-                player.ELO_2v2 || 1000,
-                player.ELO_3v3 || 1000,
-                player.ELO_4v4 || 1000
-              ];
-              const highestElo = Math.max(...elos);
-
-              return `
-                <div class="player-result" onclick="viewProfile('${player.username}')">
-                  <div class="player-avatar" id="avatar-${player.username}"></div>
-                  <div class="player-info">
-                    <div class="player-name">${player.username}</div>
-                    <div class="player-stats">
-                      <div class="stat-item">
-                        <i class="fas fa-trophy"></i>
-                        <span>${totalWins} Wins</span>
-                      </div>
-                      <div class="stat-item">
-                        <i class="fas fa-star"></i>
-                        <span>${highestElo} ELO</span>
-                      </div>
-                      <div class="stat-item">
-                        <i class="fas fa-fire"></i>
-                        <span>Level ${player.Level || 1}</span>
-                      </div>
+            searchResults.innerHTML = players.map(player => `
+              <div class="player-result" onclick="viewProfile('${player.username}')">
+                <div class="player-avatar" id="avatar-${player.username}"></div>
+                <div class="player-info">
+                  <div class="player-name">${player.username}</div>
+                  <div class="player-stats">
+                    <div class="stat-item">
+                      <i class="fas fa-trophy"></i>
+                      <span>${player.wins} Wins</span>
+                    </div>
+                    <div class="stat-item">
+                      <i class="fas fa-star"></i>
+                      <span>${player.elo} ELO</span>
                     </div>
                   </div>
                 </div>
-              `;
-            }).join('');
+              </div>
+            `).join('');
             // Fetch avatars for each player
             players.forEach(player => fetchAndSetRobloxAvatar(player.username));
           }
