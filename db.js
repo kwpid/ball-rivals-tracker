@@ -28,7 +28,26 @@ function getPlayerStats(username, callback) {
     if (!row) return callback(null, null);
     try {
       const stats = JSON.parse(row.stats);
-      callback(null, stats);
+      // Ensure the stats object has the new leaderstats structure
+      const defaultStats = {
+        Wins_1v1: 0,
+        Losses_1v1: 0,
+        Wins_2v2: 0,
+        Losses_2v2: 0,
+        Wins_3v3: 0,
+        Losses_3v3: 0,
+        Wins_4v4: 0,
+        Losses_4v4: 0,
+        Level: 1,
+        CurrentStreak: 0,
+        HighestStreak: 0,
+        ELO_1v1: 1000,
+        ELO_2v2: 1000,
+        ELO_3v3: 1000,
+        ELO_4v4: 1000
+      };
+      const mergedStats = { ...defaultStats, ...stats };
+      callback(null, mergedStats);
     } catch (e) {
       callback(e);
     }

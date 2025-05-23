@@ -44,7 +44,7 @@ app.get('/search', async (req, res) => {
             const stats = JSON.parse(row.stats);
             return {
               username: row.username,
-              wins: stats.Wins || 0,
+              wins: stats.Wins_1v1 || 0,
               elo: stats.ELO_1v1 || 1000 // Using 1v1 ELO as the main rating
             };
           } catch (e) {
@@ -85,12 +85,19 @@ app.get('/getstats', (req, res) => {
     if (err) return res.status(500).json({ error: 'DB error' });
     if (!stats) return res.status(404).json({ error: 'Player not found' });
 
-    // Format the stats to match the game's structure
+    // Format the stats to match the new leaderstats structure
     const formattedStats = {
       username: username,
       stats: {
-        Wins: stats.Wins || 0,
-        Losses: stats.Losses || 0,
+        Wins_1v1: stats.Wins_1v1 || 0,
+        Losses_1v1: stats.Losses_1v1 || 0,
+        Wins_2v2: stats.Wins_2v2 || 0,
+        Losses_2v2: stats.Losses_2v2 || 0,
+        Wins_3v3: stats.Wins_3v3 || 0,
+        Losses_3v3: stats.Losses_3v3 || 0,
+        Wins_4v4: stats.Wins_4v4 || 0,
+        Losses_4v4: stats.Losses_4v4 || 0,
+        Level: stats.Level || 1,
         CurrentStreak: stats.CurrentStreak || 0,
         HighestStreak: stats.HighestStreak || 0,
         ELO_1v1: stats.ELO_1v1 || 1000,

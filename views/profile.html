@@ -1,321 +1,245 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Player Profile - Ball Rivals Tracker</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>kwpid. - Stats</title>
   <style>
-    :root {
-      --bg-primary: #0d1117;
-      --bg-secondary: #161b22;
-      --text-primary: #c9d1d9;
-      --text-secondary: #8b949e;
-      --accent: #58a6ff;
-      --border: #30363d;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      line-height: 1.5;
-      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #3a3a20;
+      color: white;
     }
-
     .container {
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 2.5rem 1.5rem 3rem 1.5rem;
-      background: var(--bg-secondary);
-      border-radius: 12px;
-      box-shadow: 0 4px 32px 0 rgba(20,20,20,0.18);
-      border: 1.5px solid var(--border);
-      margin-top: 3rem;
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 2rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .back-button {
-      color: var(--text-secondary);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: color 0.2s;
-      font-size: 1.1rem;
-      font-weight: 500;
-    }
-
-    .back-button:hover {
-      color: var(--accent);
-    }
-
-    .profile-header {
-      display: flex;
-      gap: 2.2rem;
-      margin-bottom: 3rem;
-      align-items: center;
-    }
-
-    .avatar {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      background: var(--border);
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 16px 0 rgba(20,20,20,0.15);
-      border: 3px solid var(--bg-secondary);
-    }
-
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 50%;
-      display: block;
-    }
-
-    .profile-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .username {
-      font-size: 2.1rem;
-      margin-bottom: 0.5rem;
-      font-weight: 700;
-      letter-spacing: -1px;
-      color: var(--text-primary);
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-    }
-
-    .level {
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-      font-weight: 500;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 3rem;
-    }
-
-    .stat-card {
-      background: var(--bg-primary);
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      padding: 1.5rem 1.2rem 1.5rem 1.5rem;
-      box-shadow: 0 1px 8px 0 rgba(20,20,20,0.10);
-      transition: box-shadow 0.18s, border-color 0.18s;
-    }
-
-    .stat-card:hover {
-      box-shadow: 0 4px 16px 0 rgba(88,166,255,0.10);
-      border-color: var(--accent);
-    }
-
-    .stat-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .stat-title {
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
-    }
-
-    .stat-value {
-      font-size: 2.1rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-top: 0.2rem;
-    }
-
-    .elo-badge {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      margin-left: 0.5rem;
-      letter-spacing: 0.5px;
-    }
-
-    .elo-bronze {
-      background: #cd7f32;
-      color: white;
-    }
-
-    .elo-silver {
-      background: #c0c0c0;
-      color: white;
-    }
-
-    .elo-gold {
-      background: #ffd700;
-      color: black;
-    }
-
-    .elo-platinum {
-      background: #e5e4e2;
-      color: black;
-    }
-
-    .elo-diamond {
-      background: #b9f2ff;
-      color: black;
-    }
-
-    .elo-master {
-      background: #9370db;
-      color: white;
-    }
-
-    .elo-grandmaster {
-      background: #ff4500;
-      color: white;
-    }
-
-    .winrate {
-      font-size: 1.2rem;
-      color: var(--text-secondary);
-      margin-top: 0.5rem;
-      font-weight: 500;
-    }
-
-    .winrate.positive {
-      color: #3fb950;
-    }
-
-    .winrate.negative {
-      color: #f85149;
-    }
-
-    .stat-trend {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--text-secondary);
-      font-size: 0.97rem;
-      font-weight: 500;
-    }
-
-    .trend-up {
-      color: #3fb950;
-    }
-
-    .trend-down {
-      color: #f85149;
-    }
-
-    .recent-matches {
-      background: var(--bg-primary);
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      padding: 1.5rem;
-      box-shadow: 0 1px 8px 0 rgba(20,20,20,0.08);
-    }
-
-    .section-title {
-      font-size: 1.2rem;
-      margin-bottom: 1.5rem;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-
-    .match-list {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
-
-    .match-item {
+    .header {
+      background-color: #1f1f2e;
+      padding: 20px;
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
-      padding: 1rem;
-      background: var(--bg-secondary);
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      box-shadow: 0 1px 6px 0 rgba(20,20,20,0.07);
+      border-bottom: 3px solid #303850;
     }
-
-    .match-info {
+    .header .profile {
       display: flex;
       align-items: center;
-      gap: 1rem;
     }
-
-    .match-result {
-      font-weight: 600;
+    .header .profile-icon {
+      width: 50px;
+      height: 50px;
+      background-color: #2d2d2d;
+      border-radius: 4px;
+      margin-right: 15px;
     }
-
-    .win {
-      color: #3fb950;
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
     }
-
-    .loss {
-      color: #f85149;
+    .nav {
+      display: flex;
+      background-color: #1f1f2e;
+      padding-left: 85px;
+      border-bottom: 3px solid #303850;
     }
-
-    .match-details {
-      color: var(--text-secondary);
-      font-size: 0.97rem;
+    .nav a {
+      padding: 10px 20px;
+      text-decoration: none;
+      color: #ccc;
+    }
+    .nav a:hover {
+      background-color: #2c2c3e;
+      color: white;
+    }
+    .content {
+      display: flex;
+      gap: 20px;
+      padding-top: 20px;
+    }
+    .left-panel, .right-panel {
+      background-color: #1f1f2e;
+      padding: 20px;
+      border-radius: 8px;
+      flex: 1;
+    }
+    .left-panel {
+      max-width: 300px;
+    }
+    .section-title {
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .rating-box {
+      background-color: #2c2c3e;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+    }
+    .rating-box .title {
+      font-size: 14px;
+      color: #bbb;
+    }
+    .rating-box .value {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .playlist-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .playlist-table th, .playlist-table td {
+      padding: 10px;
+      text-align: left;
+    }
+    .playlist-table th {
+      background-color: #1f1f2e;
+      border-bottom: 2px solid #303850;
+    }
+    .playlist-table tr:nth-child(even) {
+      background-color: #2c2c3e;
+    }
+    .playlist-table tr:nth-child(odd) {
+      background-color: #1f1f2e;
+    }
+    .playlist-table td.rank {
+      font-weight: bold;
+    }
+    .playlist-table .dots {
+      text-align: right;
+      color: #888;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <a href="/" class="back-button">
-        <i class="fas fa-arrow-left"></i>
-        Back to Search
-      </a>
-    </div>
-
-    <div class="profile-header">
-      <div class="avatar" id="robloxAvatar"></div>
-      <div class="profile-info">
-        <h1 class="username" id="username">Loading...</h1>
-        <div class="level" id="level">Level: Loading...</div>
-      </div>
-    </div>
-
-    <div class="stats-grid" id="statsGrid">
-      <!-- Stats will be populated here -->
-    </div>
-
-    <div class="recent-matches">
-      <h2 class="section-title">Recent Matches</h2>
-      <div class="match-list" id="matchList">
-        <!-- Matches will be populated here -->
+  <div class="header">
+    <div class="profile">
+      <div class="profile-icon"></div>
+      <div>
+        <div>0 Views</div>
+        <h1>Username</h1>
       </div>
     </div>
   </div>
+  <div class="nav">
+    <a href="#">Overview</a>
+    <a href="#">Matches</a>
+  </div>
 
-  <script>
+  <div class="container">
+    <div class="content">
+      <div class="left-panel">
+        <div class="section-title">Peak Rating</div>
+        <div class="rating-box">
+          <div class="title">Gamemode</div>
+          <div class="value">0</div>
+          <div class="title">Season #</div>
+        </div>
+
+        <div class="section-title">Ranked Duel 1v1</div>
+        <div class="rating-box">
+          <div class="title">Current</div>
+          <div class="value">0</div>
+        </div>
+        <div class="rating-box">
+          <div class="title">Best</div>
+          <div class="value">0</div>
+          <div class="title">Season #</div>
+        </div>
+
+        <div class="section-title">Ranked Doubles 2v2</div>
+        <div class="rating-box">
+          <div class="title">Current</div>
+          <div class="value">0</div>
+        </div>
+        <div class="rating-box">
+          <div class="title">Best</div>
+          <div class="value">0</div>
+          <div class="title">Season #</div>
+        </div>
+
+        <div class="section-title">Ranked Trios 3v3</div>
+        <div class="rating-box">
+          <div class="title">Current</div>
+          <div class="value">0</div>
+        </div>
+        <div class="rating-box">
+          <div class="title">Best</div>
+          <div class="value">1,140</div>
+          <div class="title">Season #</div>
+        </div>
+
+        <div class="section-title">Ranked Quads 4v4</div>
+        <div class="rating-box">
+          <div class="title">Current</div>
+          <div class="value">0</div>
+        </div>
+        <div class="rating-box">
+          <div class="title">Best</div>
+          <div class="value">0</div>
+          <div class="title">Season #</div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="section-title">Playlists</div>
+        <table class="playlist-table">
+          <thead>
+            <tr>
+              <th>Playlist / Rank</th>
+              <th>Rating</th>
+              <th>Peak Rating</th>
+              <th>Total Wins</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="rank">Casual</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td class="dots">⋮</td>
+            </tr>
+            <tr>
+              <td class="rank">Ranked Duel 1v1<br><span>Rank</span></td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td class="dots">⋮</td>
+            </tr>
+            <tr>
+              <td class="rank">Ranked Doubles 2v2<br><span>Rank</span></td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td class="dots">⋮</td>
+            </tr>
+            <tr>
+              <td class="rank">Ranked Standard 3v3<br><span>Rank</span></td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td class="dots">⋮</td>
+            </tr>
+            <tr>
+              <td class="rank">Ranked Quads 4v4<br><span>Rank</span></td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td class="dots">⋮</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
     function getEloBadge(elo) {
       if (elo >= 2000) return 'elo-grandmaster';
       if (elo >= 1800) return 'elo-master';
@@ -360,66 +284,136 @@
         const data = await res.json();
 
         // Update profile header
-        document.getElementById('username').textContent = data.username;
-        document.getElementById('level').textContent = `Level: ${data.level || 'N/A'}`;
-        
-        const stats = data.stats;
-        const winrate = calculateWinrate(stats.Wins, stats.Losses);
-        const isPositiveWinrate = stats.Wins > stats.Losses;
+        document.querySelector('.header h1').textContent = data.username;
+        document.querySelector('.header .profile div:first-child').textContent = '0 Views';
 
         // Fetch and set ROBLOX avatar
         const avatarUrl = await fetchRobloxAvatar(data.username);
-        const avatarDiv = document.getElementById('robloxAvatar');
+        const avatarDiv = document.querySelector('.header .profile-icon');
         if (avatarUrl) {
-          avatarDiv.innerHTML = `<img src="${avatarUrl}" alt="${data.username}'s ROBLOX Avatar">`;
+          avatarDiv.innerHTML = `<img src="${avatarUrl}" alt="${data.username}'s ROBLOX Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">`;
         } else {
-          avatarDiv.innerHTML = `<i class='fas fa-user fa-4x' style='color:var(--text-secondary);'></i>`;
+          avatarDiv.innerHTML = `<i class='fas fa-user fa-2x' style='color:#ccc;'></i>`;
         }
 
-        // Update stats grid
-        const statsGrid = document.getElementById('statsGrid');
-        statsGrid.innerHTML = `
-          <div class="stat-card">
-            <div class="stat-header">
-              <div class="stat-title">1v1 Rating</div>
-            </div>
-            <div class="stat-value">
-              ${stats.ELO_1v1}
-              <span class="elo-badge ${getEloBadge(stats.ELO_1v1)}">${getEloBadge(stats.ELO_1v1).split('-')[1].toUpperCase()}</span>
-            </div>
+        const stats = data.stats;
+        const winrate1v1 = calculateWinrate(stats.Wins_1v1, stats.Losses_1v1);
+        const winrate2v2 = calculateWinrate(stats.Wins_2v2, stats.Losses_2v2);
+        const winrate3v3 = calculateWinrate(stats.Wins_3v3, stats.Losses_3v3);
+        const winrate4v4 = calculateWinrate(stats.Wins_4v4, stats.Losses_4v4);
+
+        // Update left panel stats
+        const leftPanel = document.querySelector('.left-panel');
+        leftPanel.innerHTML = `
+          <div class="section-title">Peak Rating</div>
+          <div class="rating-box">
+            <div class="title">Gamemode</div>
+            <div class="value">${Math.max(stats.ELO_1v1, stats.ELO_2v2, stats.ELO_3v3, stats.ELO_4v4)}</div>
+            <div class="title">Season #</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-header">
-              <div class="stat-title">Wins</div>
-            </div>
-            <div class="stat-value">${stats.Wins}</div>
-            <div class="winrate ${isPositiveWinrate ? 'positive' : 'negative'}">
-              Win Rate: ${winrate}
-            </div>
+
+          <div class="section-title">Ranked Duel 1v1</div>
+          <div class="rating-box">
+            <div class="title">Current</div>
+            <div class="value">${stats.ELO_1v1}</div>
+            <div class="title">Win Rate: ${winrate1v1}</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-header">
-              <div class="stat-title">Current Streak</div>
-            </div>
-            <div class="stat-value">${stats.CurrentStreak}</div>
-            <div class="stat-trend">
-              Best: ${stats.HighestStreak}
-            </div>
+          <div class="rating-box">
+            <div class="title">Best</div>
+            <div class="value">${stats.ELO_1v1}</div>
+            <div class="title">Season #</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-header">
-              <div class="stat-title">Team Ratings</div>
-            </div>
-            <div class="stat-value">
-              <div>2v2: ${stats.ELO_2v2}</div>
-              <div>3v3: ${stats.ELO_3v3}</div>
-              <div>4v4: ${stats.ELO_4v4}</div>
-            </div>
+
+          <div class="section-title">Ranked Doubles 2v2</div>
+          <div class="rating-box">
+            <div class="title">Current</div>
+            <div class="value">${stats.ELO_2v2}</div>
+            <div class="title">Win Rate: ${winrate2v2}</div>
+          </div>
+          <div class="rating-box">
+            <div class="title">Best</div>
+            <div class="value">${stats.ELO_2v2}</div>
+            <div class="title">Season #</div>
+          </div>
+
+          <div class="section-title">Ranked Trios 3v3</div>
+          <div class="rating-box">
+            <div class="title">Current</div>
+            <div class="value">${stats.ELO_3v3}</div>
+            <div class="title">Win Rate: ${winrate3v3}</div>
+          </div>
+          <div class="rating-box">
+            <div class="title">Best</div>
+            <div class="value">${stats.ELO_3v3}</div>
+            <div class="title">Season #</div>
+          </div>
+
+          <div class="section-title">Ranked Quads 4v4</div>
+          <div class="rating-box">
+            <div class="title">Current</div>
+            <div class="value">${stats.ELO_4v4}</div>
+            <div class="title">Win Rate: ${winrate4v4}</div>
+          </div>
+          <div class="rating-box">
+            <div class="title">Best</div>
+            <div class="value">${stats.ELO_4v4}</div>
+            <div class="title">Season #</div>
           </div>
         `;
 
-        // Remove recent matches section since we don't have that data
-        document.querySelector('.recent-matches').style.display = 'none';
+        // Update right panel playlist table
+        const rightPanel = document.querySelector('.right-panel');
+        rightPanel.innerHTML = `
+          <div class="section-title">Playlists</div>
+          <table class="playlist-table">
+            <thead>
+              <tr>
+                <th>Playlist / Rank</th>
+                <th>Rating</th>
+                <th>Peak Rating</th>
+                <th>Total Wins</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="rank">Casual</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="dots">⋮</td>
+              </tr>
+              <tr>
+                <td class="rank">Ranked Duel 1v1<br><span>Rank</span></td>
+                <td>${stats.ELO_1v1}</td>
+                <td>${stats.ELO_1v1}</td>
+                <td>${stats.Wins_1v1}</td>
+                <td class="dots">⋮</td>
+              </tr>
+              <tr>
+                <td class="rank">Ranked Doubles 2v2<br><span>Rank</span></td>
+                <td>${stats.ELO_2v2}</td>
+                <td>${stats.ELO_2v2}</td>
+                <td>${stats.Wins_2v2}</td>
+                <td class="dots">⋮</td>
+              </tr>
+              <tr>
+                <td class="rank">Ranked Standard 3v3<br><span>Rank</span></td>
+                <td>${stats.ELO_3v3}</td>
+                <td>${stats.ELO_3v3}</td>
+                <td>${stats.Wins_3v3}</td>
+                <td class="dots">⋮</td>
+              </tr>
+              <tr>
+                <td class="rank">Ranked Quads 4v4<br><span>Rank</span></td>
+                <td>${stats.ELO_4v4}</td>
+                <td>${stats.ELO_4v4}</td>
+                <td>${stats.Wins_4v4}</td>
+                <td class="dots">⋮</td>
+              </tr>
+            </tbody>
+          </table>
+        `;
       } catch (err) {
         console.error('Error loading profile:', err);
       }
