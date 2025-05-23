@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const { updatePlayer, getPlayerStats } = require('./db');
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('./data.db');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -28,16 +30,35 @@ app.get('/search', async (req, res) => {
   if (!query) return res.status(400).json({ error: 'Missing query' });
 
   try {
-    // TODO: Implement actual search in your database
-    // This is a mock response for now
-    const mockResults = [
-      { username: 'Player1', level: 50 },
-      { username: 'Player2', level: 45 },
-      { username: 'Player3', level: 60 }
-    ].filter(p => p.username.toLowerCase().includes(query.toLowerCase()));
+    db.all(
+      `SELECT username, stats FROM players WHERE username LIKE ? LIMIT 10`,
+      [`%${query}%`],
+      (err, rows) => {
+        if (err) {
+          console.error('Search error:', err);
+          return res.status(500).json({ error: 'Search failed' });
+        }
 
-    res.json(mockResults);
+        const results = rows.map(row => {
+          try {
+            const stats = JSON.parse(row.stats);
+            return {
+              username: row.username,
+              level: stats.level || 'N/A'
+            };
+          } catch (e) {
+            return {
+              username: row.username,
+              level: 'N/A'
+            };
+          }
+        });
+
+        res.json(results);
+      }
+    );
   } catch (err) {
+    console.error('Search error:', err);
     res.status(500).json({ error: 'Search failed' });
   }
 });
