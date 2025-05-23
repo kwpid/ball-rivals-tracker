@@ -112,6 +112,64 @@
       font-weight: 600;
     }
 
+    .elo-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-left: 0.5rem;
+    }
+
+    .elo-bronze {
+      background: #cd7f32;
+      color: white;
+    }
+
+    .elo-silver {
+      background: #c0c0c0;
+      color: white;
+    }
+
+    .elo-gold {
+      background: #ffd700;
+      color: black;
+    }
+
+    .elo-platinum {
+      background: #e5e4e2;
+      color: black;
+    }
+
+    .elo-diamond {
+      background: #b9f2ff;
+      color: black;
+    }
+
+    .elo-master {
+      background: #9370db;
+      color: white;
+    }
+
+    .elo-grandmaster {
+      background: #ff4500;
+      color: white;
+    }
+
+    .winrate {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+
+    .winrate.positive {
+      color: #3fb950;
+    }
+
+    .winrate.negative {
+      color: #f85149;
+    }
+
     .stat-trend {
       display: flex;
       align-items: center;
@@ -210,6 +268,22 @@
   </div>
 
   <script>
+    function getEloBadge(elo) {
+      if (elo >= 2000) return 'elo-grandmaster';
+      if (elo >= 1800) return 'elo-master';
+      if (elo >= 1600) return 'elo-diamond';
+      if (elo >= 1400) return 'elo-platinum';
+      if (elo >= 1200) return 'elo-gold';
+      if (elo >= 1000) return 'elo-silver';
+      return 'elo-bronze';
+    }
+
+    function calculateWinrate(wins, losses) {
+      const total = wins + losses;
+      if (total === 0) return '0%';
+      return `${Math.round((wins / total) * 100)}%`;
+    }
+
     async function loadProfile() {
       const username = window.location.pathname.split('@')[1];
       if (!username) return;
@@ -222,43 +296,55 @@
         // Update profile header
         document.getElementById('username').textContent = data.username;
         document.getElementById('level').textContent = `Level: ${data.level || 'N/A'}`;
+        
+        const stats = data.stats;
+        const winrate = calculateWinrate(stats.Wins, stats.Losses);
+        const isPositiveWinrate = stats.Wins > stats.Losses;
 
         // Update stats grid
         const statsGrid = document.getElementById('statsGrid');
-        statsGrid.innerHTML = Object.entries(data.stats || {}).map(([key, value]) => `
+        statsGrid.innerHTML = `
           <div class="stat-card">
             <div class="stat-header">
-              <div class="stat-title">${key}</div>
-              <div class="stat-trend">
-                <i class="fas fa-arrow-up trend-up"></i>
-                <span>+5%</span>
-              </div>
+              <div class="stat-title">1v1 Rating</div>
             </div>
-            <div class="stat-value">${value}</div>
+            <div class="stat-value">
+              ${stats.ELO_1v1}
+              <span class="elo-badge ${getEloBadge(stats.ELO_1v1)}">${getEloBadge(stats.ELO_1v1).split('-')[1].toUpperCase()}</span>
+            </div>
           </div>
-        `).join('');
-
-        // Update recent matches
-        const matchList = document.getElementById('matchList');
-        if (data.recentMatches && data.recentMatches.length > 0) {
-          matchList.innerHTML = data.recentMatches.map(match => `
-            <div class="match-item">
-              <div class="match-info">
-                <div class="match-result ${match.won ? 'win' : 'loss'}">
-                  ${match.won ? 'Victory' : 'Defeat'}
-                </div>
-                <div class="match-details">
-                  ${match.map} • ${match.duration}
-                </div>
-              </div>
-              <div class="match-score">
-                ${match.score}
-              </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-title">Wins</div>
             </div>
-          `).join('');
-        } else {
-          matchList.innerHTML = '<div class="match-item">No recent matches</div>';
-        }
+            <div class="stat-value">${stats.Wins}</div>
+            <div class="winrate ${isPositiveWinrate ? 'positive' : 'negative'}">
+              Win Rate: ${winrate}
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-title">Current Streak</div>
+            </div>
+            <div class="stat-value">${stats.CurrentStreak}</div>
+            <div class="stat-trend">
+              Best: ${stats.HighestStreak}
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-title">Team Ratings</div>
+            </div>
+            <div class="stat-value">
+              <div>2v2: ${stats.ELO_2v2}</div>
+              <div>3v3: ${stats.ELO_3v3}</div>
+              <div>4v4: ${stats.ELO_4v4}</div>
+            </div>
+          </div>
+        `;
+
+        // Remove recent matches section since we don't have that data
+        document.querySelector('.recent-matches').style.display = 'none';
       } catch (err) {
         console.error('Error loading profile:', err);
       }
