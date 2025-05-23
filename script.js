@@ -17,4 +17,4 @@ async function fetchStats() {
   } catch (err) {
     statsDiv.innerHTML = `<span style="color:red;">Error: ${err.message}</span>`;
   }
-}
+} 
